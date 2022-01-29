@@ -1,13 +1,6 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <sys/types.h>
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <unistd.h>
-#include <strings.h>
-
-
+#include "handle_http.c"
 #define BACKLOG 10
+
 
 int current_socket, new_socket;
 int port, True;
