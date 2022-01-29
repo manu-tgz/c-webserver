@@ -1,4 +1,3 @@
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/types.h>
@@ -6,7 +5,7 @@
 #include <netinet/in.h>
 #include <unistd.h>
 #include <strings.h>
-#include <netdb.h>
+
 
 #define BACKLOG 10
 
@@ -81,6 +80,7 @@ void accept_connection_and_response()
     {
         int pid;
         addr_size = sizeof(client_address);
+        //Acepta peticiones del navegador u otro cliente.
         new_socket = accept(current_socket, (struct sockaddr *)&client_address, &addr_size);
 
         if ((pid = fork()) == -1)
@@ -94,7 +94,7 @@ void accept_connection_and_response()
                 perror("Accepting sockets");
                 exit(-1);
             }
-
+            //Trabaja con la petición
             handle_http(new_socket);
             close(new_socket);
             exit(0);
