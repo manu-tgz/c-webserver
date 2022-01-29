@@ -1,5 +1,7 @@
 #include "handle_http.c"
+
 #define BACKLOG 10
+
 
 
 int current_socket, new_socket;
@@ -76,12 +78,12 @@ void accept_connection_and_response()
         //Acepta peticiones del navegador u otro cliente.
         new_socket = accept(current_socket, (struct sockaddr *)&client_address, &addr_size);
 
-        if ((pid = fork()) == -1)
-        {
-            close(new_socket);
-        }
-        else if (pid == 0)
-        {
+        // if ((pid = fork()) == -1)
+        // {
+        //     close(new_socket);
+        // }
+        // else if (pid == 0)
+        // {
             if (new_socket < 0)
             {
                 perror("Accepting sockets");
@@ -91,7 +93,7 @@ void accept_connection_and_response()
             handle_http(new_socket);
             close(new_socket);
             exit(0);
-        }
+        // }
     }
 }
 

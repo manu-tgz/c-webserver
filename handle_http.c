@@ -1,7 +1,10 @@
 //FIXME: include de file
 #include "file.c"
-
+#include "http.c"
 #define BUFFER_SIZE 200
+
+StringList parse;
+
 void handle_http(int socket)
 {
     if (recv_request(socket) < 0)
@@ -22,7 +25,10 @@ int  recv_request(int socket)
 		return -1;
 	}
     
-    printf("\n%s",buffer);
+    parse = string_list_init();
+	add_line_to_list(&parse,buffer);
+	http(parse);
+	int a = 0;
     //TODO:imprimir peticiones de navegadores
    
 return 1;

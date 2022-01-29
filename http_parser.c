@@ -1,6 +1,0 @@
-/*
-Hacer el parser de http.
-
-Coger la idea del shell de las funciones y sus strings
-
-*/
