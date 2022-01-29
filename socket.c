@@ -11,10 +11,11 @@
 #define BACKLOG 10
 
 int current_socket, new_socket;
-int port,   True;
+int port, True;
 struct sockaddr_in server_addr;
 char *address;
 struct sockaddr_storage client_address;
+socklen_t addr_size;
 
 void assign_port_address(int Port, char *Address)
 {
@@ -41,18 +42,15 @@ void createsocket()
     está en TIME_WAIT
     Entonces con esto nos permite usar esa dirección */
     if ((setsockopt(current_socket, SOL_SOCKET, SO_REUSEADDR, &True,
-                   sizeof(int))) <0)
+                    sizeof(int))) < 0)
     {
         close(current_socket);
         perror("setsockopt");
-      
     }
 }
 
 void bind_listen_socket()
 {
-    // char *ip;
-        
     bzero(&server_addr, sizeof(server_addr));        // Inicializa la estructura
     server_addr.sin_family = AF_INET;                // Establecer familia de direcciones
     server_addr.sin_port = htons(port);              // Establecer el puerto
@@ -79,24 +77,36 @@ Aceptar peticiones en el puerto
 */
 void accept_connection_and_response()
 {
-  while(True)
-  {
-      socklen_t sin_size = sizeof client_address;
-      current_socket = accept(current_socket,(struct sockaddr *)&client_address, &sin_size);
-      if (current_socket == -1)
-      {
-          perror("accept");
-          break;
-      }
-  }
+    while (True)
+    {
+        int pid;
+        addr_size = sizeof(client_address);
+        new_socket = accept(current_socket, (struct sockaddr *)&client_address, &addr_size);
+
+        if ((pid = fork()) == -1)
+        {
+            close(new_socket);
+        }
+        else if (pid == 0)
+        {
+            if (new_socket < 0)
+            {
+                perror("Accepting sockets");
+                exit(-1);
+            }
+
+            handle_http(new_socket);
+            close(new_socket);
+            exit(0);
+        }
+    }
 }
 
-void init_socket(int Port, char* Address)
+void init_socket(int Port, char *Address)
 {
     assign_port_address(Port, Address);
-    True= 1;
+    True = 1;
     createsocket();
     bind_listen_socket();
     accept_connection_and_response();
 }
-
