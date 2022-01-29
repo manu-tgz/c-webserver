@@ -1,3 +1,4 @@
+#include "server.h"
 #include "socket.c"
 
 int main(int argc, char **argv)
