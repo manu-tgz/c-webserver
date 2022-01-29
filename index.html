@@ -1,0 +1,28 @@
+<html>
+ 
+<head>
+ 
+    <title>Crunchify Login Page</title>
+    <script>
+        function loginForm() {
+            document.myform.submit();
+            document.myform.action = "https://crunchify.com/wp-content/uploads/code/Crunchify-LoginPage.html";
+        }
+    </script>
+    <style type="text/css">
+        body {
+            background-image: url('https://cdn.crunchify.com/bg.png');
+        }
+    </style>
+</head>
+ 
+<body onload="loginForm()">
+    <form action="https://crunchify.com/wp-content/uploads/code/success.html" name="myform" method="post">
+        <input type="text" name="email" value="myemail@crunchify.com">
+        <input type="password" name="password" value="mypassw@rd">
+        <input type="submit" value="Login">
+    </form>
+ 
+</body>
+ 
+</html>
