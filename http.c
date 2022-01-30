@@ -3,17 +3,11 @@
 char* commands[] = {
     "GET",
     "POST",
-    "HEAD",
-    "OPTIONS",
-    "TRACE"
 };
 
 void (*Function[])(StringList args) = {
     Get,
     Post,
-    Head,
-    Options,
-    Trace,
     0
 };
 
