@@ -44,6 +44,14 @@ void Get(StringList list)
 
 
     FILE *fp = fopen(url, "rb");
+
+    if (fp == NULL)
+    {
+        printf("Unable to open file");
+        //sendString("404 Not Found\n", new_socket);
+        return;
+    }
+
     int contentLength = Content_Lenght(fp);
     sendFile(fp, contentLength);
     fclose (fp);
