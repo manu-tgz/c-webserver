@@ -108,6 +108,7 @@ void Get(StringList list)
 
     if (fp == NULL)
     {
+        printf("%s",url);
         sendString("400 Bad Request\n", new_socket);
         printf("No se puede abrir el archivo\n");
         return;

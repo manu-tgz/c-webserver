@@ -27,6 +27,11 @@ int  recv_request(int socket)
     
     parse = string_list_init();
 	add_line_to_list(&parse,buffer);
+	print_list_for_shell(&parse);
+	printf("\n");
+	
+	URI uri = Uri_init(buffer);
+	print_uri(&uri);
 	http(parse);
 	int a = 0;
     //TODO:imprimir peticiones de navegadores
