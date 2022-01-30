@@ -1,3 +1,4 @@
+#include <sys/socket.h>
 #define SEEK_END 2	/* Seek from end of file.  */
 
 int sendBinary(int *byte, int length)
@@ -10,6 +11,8 @@ int sendBinary(int *byte, int length)
 
 	return 0;
 }
+
+//Encviar archivo por binarios
 void sendFile(FILE *fp, int file_size)
 {
 	int current_char = 0;
@@ -20,6 +23,7 @@ void sendFile(FILE *fp, int file_size)
 	}
 	while(current_char != EOF);
 }
+//Devuelve el largo del archivo
 int Content_Lenght(FILE *fp)
 {
 	int filesize = 0;
@@ -32,17 +36,16 @@ int Content_Lenght(FILE *fp)
 }
 
 char* get_ext(char item []);
+
 void Get(StringList list)
 {
-    int list_len = strlen(list.items[0]);
-    int addrees_len = strlen(address);
-    
-    int temp =list_len + addrees_len;
+    //Concat address y archivo
+    int temp =strlen(list.items[0])+ strlen(address);
     char* url = (char*)malloc(temp*sizeof(char));
     strcpy(url, address);
     strcat(url, list.items[0]);
 
-
+    //TODO: Cambiar a funciones del proyecto
     FILE *fp = fopen(url, "rb");
 
     if (fp == NULL)
@@ -51,12 +54,11 @@ void Get(StringList list)
         //sendString("404 Not Found\n", new_socket);
         return;
     }
-
     int contentLength = Content_Lenght(fp);
     sendFile(fp, contentLength);
     fclose (fp);
 
-    char* ext = get_ext(url);
+    // char* ext = get_ext(url);
 
 }
 
