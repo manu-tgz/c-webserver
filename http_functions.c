@@ -1,4 +1,64 @@
 #define SEEK_END 2	/* Seek from end of file.  */
+#include "mimes.c"
+
+sendString(char *message, int socket)
+{
+	int length, bytes_sent;
+	length = strlen(message);
+
+	bytes_sent = send(socket, message, length, 0);
+
+	return bytes_sent;
+}
+
+
+void sendHeader(char *Status_code, char *Content_Type, int TotalSize, int socket)
+{
+	char *head = "\r\nHTTP/1.1 ";
+	char *content_head = "\r\nContent-Type: ";
+	char *server_head = "\r\nServer: PT06";
+	char *length_head = "\r\nContent-Length: ";
+	char *date_head = "\r\nDate: ";
+	char *newline = "\r\n";
+	char contentLength[100];
+
+	time_t rawtime;
+	time(&rawtime);
+
+	sprintf(contentLength, "%i", TotalSize);
+
+	char *message = malloc((
+							   strlen(head) +
+							   strlen(content_head) +
+							   strlen(server_head) +
+							   strlen(length_head) +
+							   strlen(date_head) +
+							   strlen(newline) +
+							   strlen(Status_code) +
+							   strlen(Content_Type) +
+							   strlen(contentLength) +
+							   28 +
+							   sizeof(char)) *
+						   2);
+
+	if (message != NULL)
+	{
+		strcpy(message, head);
+		strcat(message, Status_code);
+		strcat(message, content_head);
+		strcat(message, Content_Type);
+		strcat(message, server_head);
+		strcat(message, length_head);
+		strcat(message, contentLength);
+		strcat(message, date_head);
+		strcat(message, (char *)ctime(&rawtime));
+		strcat(message, newline);
+
+		sendString(message, socket);
+
+		free(message);
+	}
+}
 
 int sendBinary(int *byte, int length)
 {
@@ -10,6 +70,7 @@ int sendBinary(int *byte, int length)
 
 	return 0;
 }
+
 void sendFile(FILE *fp, int file_size)
 {
 	int current_char = 0;
@@ -47,17 +108,23 @@ void Get(StringList list)
 
     if (fp == NULL)
     {
-        printf("Unable to open file");
-        //sendString("404 Not Found\n", new_socket);
+        sendString("400 Bad Request\n", new_socket);
+        printf("No se puede abrir el archivo\n");
         return;
     }
 
     int contentLength = Content_Lenght(fp);
-    sendFile(fp, contentLength);
-    fclose (fp);
-
+    
     char* ext = get_ext(url);
-
+    
+    if(check_mime(ext)!= -1){
+        sendHeader("200 OK", mime, contentLength, new_socket);
+        sendFile(fp, contentLength);
+    }
+    else{
+        sendString("400 Bad Request\n", new_socket);
+    }
+    fclose (fp);
 }
 
 char* get_ext(char item [])
@@ -87,20 +154,13 @@ char* get_ext(char item [])
 
 
 
+
+
+
+
+
+
 void Post(StringList list)
 {
     printf("Llego al POST /n");
-}
-void Head(StringList list)
-{
-    print_list(&list);
-    printf("Llego al HEAD /n");
-}
-void Options(StringList list)
-{
-    printf("Llego al OPTIONS /n");
-}
-void Trace(StringList list)
-{
-    printf("Llego al TRACE /n");
 }
