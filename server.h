@@ -7,3 +7,5 @@
 #include <strings.h>
 #include <errno.h>
 #include "List.c"
+
+int new_socket;

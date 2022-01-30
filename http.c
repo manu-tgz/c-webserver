@@ -20,7 +20,6 @@ void (*Function[])(StringList args) = {
 //Selecciona el controlador
 void http (StringList list)
 {
-    print_list(&list);
     char* command = get_and_delete_from_list(&list,0);
     int a = 0;   
     for (int i = 0; i < 5; i++)

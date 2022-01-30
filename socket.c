@@ -1,13 +1,13 @@
+char *address;
 #include "handle_http.c"
 
 #define BACKLOG 10
 
 
 
-int current_socket, new_socket;
+int current_socket;
 int port, True;
 struct sockaddr_in server_addr;
-char *address;
 struct sockaddr_storage client_address;
 socklen_t addr_size;
 
