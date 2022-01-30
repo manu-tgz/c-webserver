@@ -5,8 +5,8 @@
 sendString(char *message, int socket)
 {
 	int length, bytes_sent;
-	length = strlen(message);
 
+	length = strlen(message);
 	bytes_sent = send(socket, message, length, 0);
 
 	return bytes_sent;
@@ -61,28 +61,14 @@ void sendHeader(char *Status_code, char *Content_Type, int TotalSize, int socket
 	}
 }
 
-int sendBinary(int *byte, int length)
-{
-	int bytes_sent;
-	bytes_sent = send(new_socket, byte, length, 0);
-
-	return bytes_sent;
-
-
-	return 0;
-}
-
-<<<<<<< HEAD
-//Encviar archivo por binarios
-=======
->>>>>>> aad40a529fcbc6e7fb003af5625d4ee700c67ad1
 void sendFile(FILE *fp, int file_size)
 {
 	int current_char = 0;
 
 	do{
-		current_char = fgetc(fp);
-		sendBinary(&current_char, sizeof(char));
+		current_char = fgetc(fp); //bytes
+		send(new_socket, &current_char, sizeof(char), 0);
+		
 	}
 	while(current_char != EOF);
 }
@@ -103,9 +89,13 @@ char* get_ext(char item []);
 void Get(StringList list)
 {
     //Concat address y archivo
-    int temp =strlen(list.items[0])+ strlen(address);
-    char* url = (char*)malloc(temp*sizeof(char));
-    strcpy(url, address);
+	char* url = strcpy_init
+
+(strlen(list.items[0])+ strlen(address),address);
+	//TODO: Borrar luego
+    // int temp =strlen(list.items[0])+ strlen(address);
+    // char* url = (char*)malloc(temp*sizeof(char));
+    // strcpy(url, address);
     strcat(url, list.items[0]);
 
     //TODO: Cambiar a funciones del proyecto
@@ -118,7 +108,6 @@ void Get(StringList list)
         return;
     }
     int contentLength = Content_Lenght(fp);
-
 
     char* ext = get_ext(url);
     
