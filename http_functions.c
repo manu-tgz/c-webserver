@@ -118,14 +118,8 @@ void Get(StringList list)
         return;
     }
     int contentLength = Content_Lenght(fp);
-<<<<<<< HEAD
-    sendFile(fp, contentLength);
-    fclose (fp);
 
-    // char* ext = get_ext(url);
 
-=======
-    
     char* ext = get_ext(url);
     
     if(check_mime(ext)!= -1){
@@ -136,7 +130,7 @@ void Get(StringList list)
         sendString("400 Bad Request\n", new_socket);
     }
     fclose (fp);
->>>>>>> aad40a529fcbc6e7fb003af5625d4ee700c67ad1
+
 }
 
 char* get_ext(char item [])
