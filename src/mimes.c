@@ -1,3 +1,5 @@
+//TODO: Añadir esto a un archivo mime.text por ejemplo
+
 char* mime;
 char* exts[] = {".json",
                 ".ogg",
@@ -47,14 +49,3 @@ char* mimes[] = {
                 "video/ogg",
                 "video/webm"
 };
-
-int check_mime(char* ext)
-{
-    for (int i = 0; i < 20; i++)
-        if(strcmp(ext,exts[i])==0)
-        {
-            mime = mimes[i];
-            return 1;
-        }
-    return -1;    
-}

@@ -29,10 +29,11 @@ void thisdirectory()
 
     printf("%s",index_address);
 }
-//Se diferencia con strcpy este crea el string inicial
-char *strcpy_init(int lengh, char *address)
+
+//Concatena dos string y los guarda en un string del tamaño especificado
+char *strcpy_init(int lengh, char *s1 , char* s2)
 {
-    char *s = (char *)malloc((lengh) * sizeof(char));
-    strcpy(s, address);
-    return s;
+    char *result = (char *)malloc((lengh) * sizeof(char));
+    sprintf(result, "%s%s", s1, s2);
+    return result;
 }

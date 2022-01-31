@@ -1,5 +1,4 @@
-//FIXME: include de file
-#include "file.c"
+//TODO: Mover estos 2 metodos a socker.c
 #include "http.c"
 #define BUFFER_SIZE 200
 
@@ -28,14 +27,14 @@ int  recv_request(int socket)
     parse = string_list_init();
 	add_line_to_list(&parse,buffer);
 
+    //TODO: mover Uri a http.c
 	printf("\n");
 	URI uri = Uri_init(buffer);
 	print_uri(&uri);
 
 	http(parse,uri);
 	int a = 0;
-    //TODO:imprimir peticiones de navegadores
-   
+ 
 return 1;
 }
 

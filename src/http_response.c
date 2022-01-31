@@ -1,6 +1,7 @@
-#include <sys/socket.h>
-#define SEEK_END 2 /* Seek from end of file.  */
 #include "mimes.c"
+#include <dirent.h>
+
+char *get_ext(char item[]);
 
 sendString(char *message, int socket)
 {
@@ -63,7 +64,6 @@ void sendHeader(char *Status_code, char *Content_Type, int TotalSize, int socket
 void sendFile(FILE *fp, int file_size)
 {
 	int current_char = 0;
-
 	do
 	{
 		current_char = fgetc(fp); //bytes
@@ -75,48 +75,14 @@ void sendFile(FILE *fp, int file_size)
 int Content_Lenght(FILE *fp)
 {
 	int filesize = 0;
-
-	fseek(fp, 0, SEEK_END);
-	filesize = ftell(fp);
-	rewind(fp);
+	fseek(fp, 0, SEEK_END); //Va al final del archivo
+	filesize = ftell(fp);  //obtiene el valor puntero que está al final
+	rewind(fp);  //coloca el puntero al inicio del archivo
 
 	return filesize;
 }
 
-char *get_ext(char item[]);
-
-void Get(URI uri)
-{
-	//Concat address y archivo
-	char *url = strcpy_init(strlen(uri.path) + strlen(address), address);
-    strcat(url, uri.path);
-
-	//TODO: Cambiar a funciones del proyecto
-	FILE *fp = fopen(url, "rb");
-
-	if (fp == NULL)
-	{
-		printf("%s", url);
-		sendString("400 Bad Request\n", new_socket);
-		printf("No se puede abrir el archivo\n");
-		return;
-	}
-	int contentLength = Content_Lenght(fp);
-
-	char *ext = get_ext(url);
-
-	if (check_mime(ext) != -1)
-	{
-		sendHeader("200 OK", mime, contentLength, new_socket);
-		sendFile(fp, contentLength);
-	}
-	else
-	{
-		sendString("400 Bad Request\n", new_socket);
-	}
-	fclose(fp);
-}
-
+//Obtener extensión
 char *get_ext(char item[])
 {
 	int index = 0;
@@ -144,7 +110,41 @@ char *get_ext(char item[])
 	return result;
 }
 
-void Post(URI uri)
+//Buscar el mime
+int check_mime(char* ext)
 {
-	printf("Llego al POST /n");
+    for (int i = 0; i < 20; i++)
+        if(strcmp(ext,exts[i])==0)
+        {
+            mime = mimes[i];
+            return 1;
+        }
+    return -1;    
 }
+
+//Abrir archivos
+File open_file(char* url, char* status)
+{
+	FILE *fp = fopen(url, status);
+	if (fp == NULL)
+	{
+		printf("%s", url);
+		sendString("400 Bad Request\n", new_socket);
+		printf("No se puede abrir el archivo\n");
+		return;
+	}
+	return fp;
+}
+
+//Método para abrir archivos, descargar ....etc
+void open(char *address)
+{
+    DIR *dp;
+    struct dirent *dirp;
+    dp = opendir(address);
+
+    while ((dirp = readdir(dp)) != NULL)
+        printf("%s\n", dirp->d_name);
+}
+
+//TODO: Descargar archivos

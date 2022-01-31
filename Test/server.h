@@ -7,6 +7,7 @@
 #include <unistd.h>
 #include <strings.h>
 #include <errno.h>
+#include "List.c"
 
 #include <time.h>
 
@@ -14,3 +15,4 @@
 int new_socket;
 char *index_address;
 #define Index "/web"
+

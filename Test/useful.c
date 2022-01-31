@@ -23,15 +23,13 @@ char *pwd()
 void thisdirectory()
 {
     char *buf = pwd();
-    printf("%s",buf);
-    index_address = strcpy_init
-(strlen(buf) + strlen(Index), buf);
+    index_address= (char *)malloc((strlen(buf) + strlen(Index)-4) * sizeof(char));
+    strncpy(index_address, buf,strlen(buf)-5);
     strcat(index_address, Index);
     free(buf);
 }
 //Se diferencia con strcat a que el crea el string inicial
-char* strcpy_init
-(int lengh, char *address)
+char *strcpy_init(int lengh, char *address)
 {
     char *s = (char *)malloc((lengh) * sizeof(char));
     strcpy(s, address);
