@@ -1,6 +1,6 @@
 #include <assert.h>
 char *pwd();
-char *strcpy_init(int lengh, char *address);
+char *strcpy_init(int lengh, char *s1 , char* s2);
 
 char *pwd()
 {

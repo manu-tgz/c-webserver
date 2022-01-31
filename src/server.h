@@ -9,11 +9,10 @@
 #include <errno.h>
 #include "List.c"
 #include "uri.c"
-
-
 #include <time.h>
 
+#define Index "/web"
 
 int new_socket;
 char *index_address;
-#define Index "/web"
+

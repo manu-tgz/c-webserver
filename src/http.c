@@ -3,6 +3,8 @@ Contien todos los metodos del protocolo http implementados
 */
 
 #include "http_response.c"
+void Get(URI uri);
+
 
 char* commands[] = {
     "GET",
@@ -35,8 +37,16 @@ void Get(URI uri)
 	//Concat address y archivo
 	char *url = strcpy_init(strlen(uri.path) + strlen(address), address,uri.path);
     
-	FILE *fp = open_file(url, "rb");
-
+	FILE *fp = fopen(url, "rb");
+	if (fp == NULL)
+	{
+		printf("%s", url);
+		sendString("400 Bad Request\n", new_socket);
+		printf("No se puede abrir el archivo\n");
+		return fp;
+	}
+    //TODO: Arreglar estos parches
+    #pragma region IF 
 	int contentLength = Content_Lenght(fp);
 
 	char *ext = get_ext(url);
@@ -51,4 +61,5 @@ void Get(URI uri)
 		sendString("400 Bad Request\n", new_socket);
 	}
 	fclose(fp);
+    #pragma endregion
 }

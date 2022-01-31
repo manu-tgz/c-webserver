@@ -3,7 +3,7 @@ char *address;
 
 #define BACKLOG 10
 
-int client_socket,port, True;
+int listen_socket,port, True;
 struct sockaddr_in server_addr;
 struct sockaddr_storage client_address;
 socklen_t addr_size;
@@ -25,17 +25,17 @@ void assign_port_address(int Port, char *Address)
 
 void createsocket()
 {
-    client_socket = socket(AF_INET, SOCK_STREAM, 0);
-    if (client_socket == -1) // Crea la conexión y devuelve fd
+    listen_socket = socket(AF_INET, SOCK_STREAM, 0);
+    if (listen_socket == -1) // Crea la conexión y devuelve fd
         perror("Server: Crear socket - ");
 
     /* @SO_REUSEADDR si es true la dirección puede estar utilizada por otro socket o 
     está en TIME_WAIT
     Entonces con esto nos permite usar esa dirección */
-    if ((setsockopt(client_socket, SOL_SOCKET, SO_REUSEADDR, &True,
+    if ((setsockopt(listen_socket, SOL_SOCKET, SO_REUSEADDR, &True,
                     sizeof(int))) < 0)
     {
-        close(client_socket);
+        close(listen_socket);
         perror("setsockopt");
     }
 }
@@ -48,17 +48,17 @@ void bind_listen_socket()
     server_addr.sin_addr.s_addr = htonl(INADDR_ANY); // Establecer dirección
 
     /*Asocia el socket a la dirección server_addr*/
-    if (bind(client_socket, (struct sockaddr *)&server_addr, sizeof(struct sockaddr)) < 0)
+    if (bind(listen_socket, (struct sockaddr *)&server_addr, sizeof(struct sockaddr)) < 0)
     {
-        close(client_socket);
+        close(listen_socket);
         perror("Server bind:");
     }
 
     //Inicial el listen
     //especifica que el socket desea recibir conexiones
-    if (listen(client_socket, BACKLOG) < 0)
+    if (listen(listen_socket, BACKLOG) < 0)
     {
-        close(client_socket);
+        close(listen_socket);
         perror("Server listen:");
     }
 }
@@ -73,7 +73,7 @@ void accept_connection()
         int pid;
         addr_size = sizeof(client_address);
         //Acepta peticiones del navegador u otro cliente.
-        new_socket = accept(client_socket, (struct sockaddr *)&client_address, &addr_size);
+        new_socket = accept(listen_socket, (struct sockaddr *)&client_address, &addr_size);
 
         if ((pid = fork()) == -1)
         {

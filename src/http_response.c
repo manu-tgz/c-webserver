@@ -122,20 +122,6 @@ int check_mime(char* ext)
     return -1;    
 }
 
-//Abrir archivos
-File open_file(char* url, char* status)
-{
-	FILE *fp = fopen(url, status);
-	if (fp == NULL)
-	{
-		printf("%s", url);
-		sendString("400 Bad Request\n", new_socket);
-		printf("No se puede abrir el archivo\n");
-		return;
-	}
-	return fp;
-}
-
 //Método para abrir archivos, descargar ....etc
 void open(char *address)
 {
