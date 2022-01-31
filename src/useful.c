@@ -22,9 +22,12 @@ char *pwd()
 void thisdirectory()
 {
     char *buf = pwd();
-    index_address = strcpy_init(strlen(buf) + strlen(Index), buf);
+    index_address= (char *)malloc((strlen(buf) + strlen(Index)-4) * sizeof(char));
+    strncpy(index_address, buf,strlen(buf)-4);
     strcat(index_address, Index);
     free(buf);
+
+    printf("%s",index_address);
 }
 //Se diferencia con strcpy este crea el string inicial
 char *strcpy_init(int lengh, char *address)

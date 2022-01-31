@@ -39,6 +39,8 @@ URI Uri_init(char* buffer){
 	}
 	if(parser_path.count >3)
 		uri.fragment = parser_path.items[4];
+	if(strcmp( uri.path, "/")==0)
+		uri.path = "/index.html";
 	return uri;
 }
 

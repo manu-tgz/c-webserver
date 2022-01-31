@@ -1,5 +1,5 @@
 #include <sys/socket.h>
-#define SEEK_END 2	/* Seek from end of file.  */
+#define SEEK_END 2 /* Seek from end of file.  */
 #include "mimes.c"
 
 sendString(char *message, int socket)
@@ -11,7 +11,6 @@ sendString(char *message, int socket)
 
 	return bytes_sent;
 }
-
 
 void sendHeader(char *Status_code, char *Content_Type, int TotalSize, int socket)
 {
@@ -65,12 +64,12 @@ void sendFile(FILE *fp, int file_size)
 {
 	int current_char = 0;
 
-	do{
+	do
+	{
 		current_char = fgetc(fp); //bytes
 		send(new_socket, &current_char, sizeof(char), 0);
-		
-	}
-	while(current_char != EOF);
+
+	} while (current_char != EOF);
 }
 //Devuelve el largo del archivo
 int Content_Lenght(FILE *fp)
@@ -84,79 +83,68 @@ int Content_Lenght(FILE *fp)
 	return filesize;
 }
 
-char* get_ext(char item []);
+char *get_ext(char item[]);
 
-void Get(StringList list)
+void Get(URI uri)
 {
-    //Concat address y archivo
-	char* url = strcpy_init
+	//Concat address y archivo
+	char *url = strcpy_init(strlen(uri.path) + strlen(address), address);
+    strcat(url, uri.path);
 
-(strlen(list.items[0])+ strlen(address),address);
-	//TODO: Borrar luego
-    // int temp =strlen(list.items[0])+ strlen(address);
-    // char* url = (char*)malloc(temp*sizeof(char));
-    // strcpy(url, address);
-    strcat(url, list.items[0]);
+	//TODO: Cambiar a funciones del proyecto
+	FILE *fp = fopen(url, "rb");
 
-    //TODO: Cambiar a funciones del proyecto
-    FILE *fp = fopen(url, "rb");
+	if (fp == NULL)
+	{
+		printf("%s", url);
+		sendString("400 Bad Request\n", new_socket);
+		printf("No se puede abrir el archivo\n");
+		return;
+	}
+	int contentLength = Content_Lenght(fp);
 
-    if (fp == NULL)
-    {
-        printf("%s",url);
-        sendString("400 Bad Request\n", new_socket);
-        printf("No se puede abrir el archivo\n");
-        return;
-    }
-    int contentLength = Content_Lenght(fp);
+	char *ext = get_ext(url);
 
-    char* ext = get_ext(url);
-    
-    if(check_mime(ext)!= -1){
-        sendHeader("200 OK", mime, contentLength, new_socket);
-        sendFile(fp, contentLength);
-    }
-    else{
-        sendString("400 Bad Request\n", new_socket);
-    }
-    fclose (fp);
-
+	if (check_mime(ext) != -1)
+	{
+		sendHeader("200 OK", mime, contentLength, new_socket);
+		sendFile(fp, contentLength);
+	}
+	else
+	{
+		sendString("400 Bad Request\n", new_socket);
+	}
+	fclose(fp);
 }
 
-char* get_ext(char item [])
+char *get_ext(char item[])
 {
-    int index = 0;
-    int ini = strlen(item)-1;
-    for ( int i = ini; i >= 0; i--)
-    {
-        if(item[i] == '.')
-        {
-            index = i;
-            break;
-        }
-        if(item[i] == '/')
-        break;
-    }
-    if(index == 0) return '/0';
+	int index = 0;
+	int ini = strlen(item) - 1;
+	for (int i = ini; i >= 0; i--)
+	{
+		if (item[i] == '.')
+		{
+			index = i;
+			break;
+		}
+		if (item[i] == '/')
+			break;
+	}
+	if (index == 0)
+		return '\0';
 
-    int count = strlen(item)- index;
-    char* result =  (char*)malloc(count*sizeof(char)); 
-    
-    for (int i = index; i < strlen(item); i++)
-        result[i-index] = item[i];
-    
-    return result;    
+	int count = strlen(item) - index +1;
+	char *result = (char *)malloc(count * sizeof(char));
+	
+	for (int i= index; i < strlen(item); i++)
+		result[i - index] = item[i];
+	result[strlen(item) - index] = '\0';	
+
+	return result;
 }
 
-
-
-
-
-
-
-
-
-void Post(StringList list)
+void Post(URI uri)
 {
-    printf("Llego al POST /n");
+	printf("Llego al POST /n");
 }
