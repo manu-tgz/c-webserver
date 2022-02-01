@@ -13,10 +13,11 @@ sendString(char *message, int socket)
 	return bytes_sent;
 }
 
-void sendHeader(char *Status_code, char *Content_Type, int TotalSize, int socket)
+void sendHeader(char *Status_code, char *Content_Type, int TotalSize, int socket,char* Disposition)
 {
 	char *head = "\r\nHTTP/1.1 ";
 	char *content_head = "\r\nContent-Type: ";
+	char *disposition = "\r\nContent-Disposition:";
 	char *server_head = "\r\nServer: PT06";
 	char *length_head = "\r\nContent-Length: ";
 	char *date_head = "\r\nDate: ";
@@ -32,6 +33,7 @@ void sendHeader(char *Status_code, char *Content_Type, int TotalSize, int socket
 							   strlen(head) +
 							   strlen(content_head) +
 							   strlen(server_head) +
+							   strlen(disposition) +
 							   strlen(length_head) +
 							   strlen(date_head) +
 							   strlen(newline) +
@@ -48,15 +50,17 @@ void sendHeader(char *Status_code, char *Content_Type, int TotalSize, int socket
 		strcat(message, Status_code);
 		strcat(message, content_head);
 		strcat(message, Content_Type);
+		strcat(message, disposition);
+		strcat(message, Disposition);
 		strcat(message, server_head);
 		strcat(message, length_head);
 		strcat(message, contentLength);
 		strcat(message, date_head);
 		strcat(message, (char *)ctime(&rawtime));
 		strcat(message, newline);
-
 		sendString(message, socket);
-
+		
+		printf("%s",message);
 		free(message);
 	}
 }

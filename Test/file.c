@@ -14,6 +14,9 @@ void get_directory(/*char *address ,*/FILE *fp)
 
     while ((dirp = readdir(dp)) != NULL)
     {
+        if(strcmp(dirp->d_name,".")|| strcmp(dirp->d_name,".."))
+            continue;
+            
         char* temp = (char*)malloc((strlen(dirp->d_name)+1)*sizeof(char));
         strcpy(temp,"/");
         strcat(temp,dirp->d_name);

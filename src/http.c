@@ -16,8 +16,10 @@ void (*Function[])(URI args) = {
 };
 
 //Selecciona el controlador
-void http (StringList list,URI uri)
+void http (StringList list,char* buffer)
 {
+	URI uri = Uri_init(buffer);
+	print_uri(&uri);
     char* command = get_and_delete_from_list(&list,0);
     int a = 0;   
     for (int i = 0; i < 5; i++)
@@ -37,7 +39,8 @@ void Get(URI uri)
 	//Concat address y archivo
 	char *url = strcpy_init(strlen(uri.path) + strlen(address), address,uri.path);
     
-	FILE *fp = fopen(url, "rb");
+	FILE *fp = fopen(url, "rb+");
+
 	if (fp == NULL)
 	{
 		printf("%s", url);
@@ -53,7 +56,11 @@ void Get(URI uri)
 
 	if (check_mime(ext) != -1)
 	{
-		sendHeader("200 OK", mime, contentLength, new_socket);
+		if(strcmp(uri.path, "/index.html")==0)
+			sendHeader("200 OK", mime, contentLength, new_socket,"");
+		else 
+			sendHeader("200 OK", mime, contentLength, new_socket,"attachment");
+
 		sendFile(fp, contentLength);
 	}
 	else

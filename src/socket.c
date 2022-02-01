@@ -1,5 +1,6 @@
 char *address;
-#include "handle_http.c"
+#include "http.c"
+#define BUFFER_SIZE 200
 
 #define BACKLOG 10
 
@@ -92,6 +93,39 @@ void accept_connection()
             exit(0);
         }
     }
+}
+
+StringList parse;
+
+void handle_http(int socket)
+{
+    if (recv_request(socket) < 0)
+	{
+		perror("Receive");
+		exit(-1);
+	}
+}
+
+int  recv_request(int socket)
+{
+	char buffer[BUFFER_SIZE];
+	memset(buffer,'\0', BUFFER_SIZE);
+
+	if (recv(socket, buffer, BUFFER_SIZE, 0) == -1)
+	{
+		perror("Request");
+		return -1;
+	}
+    //Agregar mensaje a la lista
+    parse = string_list_init();
+	add_line_to_list(&parse,buffer);
+
+	printf("\n\n");
+
+	http(parse,buffer);
+	int a = 0;
+ 
+return 1;
 }
 
 void init_socket(int Port, char *Address)
