@@ -1,4 +1,8 @@
 char *address;
+<<<<<<< HEAD
+=======
+
+>>>>>>> 94d94273d08dbd561d2144c80d7dcc01bd6b0241
 #include "http.c"
 #define BUFFER_SIZE 200
 
@@ -8,6 +12,14 @@ int listen_socket,port, True;
 struct sockaddr_in server_addr;
 struct sockaddr_storage client_address;
 socklen_t addr_size;
+
+//Clientes 
+//clients data
+int count, activeUsers;
+struct pollfd *fds;
+int *dfds;
+off_t *offsets;
+
 
 void assign_port_address(int Port, char *Address)
 {
@@ -128,6 +140,25 @@ int  recv_request(int socket)
 return 1;
 }
 
+<<<<<<< HEAD
+=======
+// void addClient(int connctfd)
+// {
+//     fds[count].fd = connctfd;
+//     fds[count].events = POLLIN;
+//     dfds[count++] = -1;
+//     ++activeUsers;
+// }
+
+// void DeleteClient(int client)
+// {
+//     close(fds[client].fd);
+//     close(dfds[client]);
+//     fds[client].fd = -1;
+//     --activeUsers;
+// }
+
+>>>>>>> 94d94273d08dbd561d2144c80d7dcc01bd6b0241
 void init_socket(int Port, char *Address)
 {
     assign_port_address(Port, Address);
