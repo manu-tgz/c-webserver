@@ -26,8 +26,6 @@ void thisdirectory()
     strncpy(index_address, buf,strlen(buf)-4);
     strcat(index_address, Index);
     free(buf);
-
-    printf("%s",index_address);
 }
 
 //Concatena dos string y los guarda en un string del tamaño especificado

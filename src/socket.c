@@ -1,5 +1,7 @@
 char *address;
-#include "handle_http.c"
+
+#include "http.c"
+#define BUFFER_SIZE 200
 
 #define BACKLOG 10
 
@@ -7,6 +9,14 @@ int listen_socket,port, True;
 struct sockaddr_in server_addr;
 struct sockaddr_storage client_address;
 socklen_t addr_size;
+
+//Clientes 
+//clients data
+int count, activeUsers;
+struct pollfd *fds;
+int *dfds;
+off_t *offsets;
+
 
 void assign_port_address(int Port, char *Address)
 {
@@ -93,6 +103,55 @@ void accept_connection()
         }
     }
 }
+
+StringList parse;
+
+void handle_http(int socket)
+{
+    if (recv_request(socket) < 0)
+	{
+		perror("Receive");
+		exit(-1);
+	}
+}
+
+int  recv_request(int socket)
+{
+	char buffer[BUFFER_SIZE];
+	memset(buffer,'\0', BUFFER_SIZE);
+
+	if (recv(socket, buffer, BUFFER_SIZE, 0) == -1)
+	{
+		perror("Request");
+		return -1;
+	}
+    //Agregar mensaje a la lista
+    parse = string_list_init();
+	add_line_to_list(&parse,buffer);
+
+	printf("\n\n");
+
+	http(parse,buffer);
+	int a = 0;
+ 
+return 1;
+}
+
+// void addClient(int connctfd)
+// {
+//     fds[count].fd = connctfd;
+//     fds[count].events = POLLIN;
+//     dfds[count++] = -1;
+//     ++activeUsers;
+// }
+
+// void DeleteClient(int client)
+// {
+//     close(fds[client].fd);
+//     close(dfds[client]);
+//     fds[client].fd = -1;
+//     --activeUsers;
+// }
 
 void init_socket(int Port, char *Address)
 {

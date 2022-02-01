@@ -1,5 +1,5 @@
 /*
-Contien todos los metodos del protocolo http implementados
+Contiene todos los metodos del protocolo http implementados
 */
 
 #include "http_response.c"
@@ -16,8 +16,10 @@ void (*Function[])(URI args) = {
 };
 
 //Selecciona el controlador
-void http (StringList list,URI uri)
+void http (StringList list,char* buffer)
 {
+	URI uri = Uri_init(buffer);
+	print_uri(&uri);
     char* command = get_and_delete_from_list(&list,0);
     int a = 0;   
     for (int i = 0; i < 5; i++)
@@ -43,18 +45,25 @@ void Get(URI uri)
 		printf("%s", url);
 		sendString("400 Bad Request\n", new_socket);
 		printf("No se puede abrir el archivo\n");
-		return fp;
+		return ;
 	}
     //TODO: Arreglar estos parches
     #pragma region IF 
 	int contentLength = Content_Lenght(fp);
 
 	char *ext = get_ext(url);
-
+    
 	if (check_mime(ext) != -1)
 	{
-		sendHeader("200 OK", mime, contentLength, new_socket);
-		sendFile(fp, contentLength);
+		// if(strcmp(uri.path,"/index.html")==0)
+		// {
+			sendHeader("200 OK", mime, contentLength, new_socket);
+			sendFile(fp, contentLength);
+		// }
+		// else
+		// {
+		// 	//descarga archivo.
+		// }
 	}
 	else
 	{
