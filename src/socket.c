@@ -1,8 +1,5 @@
 char *address;
-<<<<<<< HEAD
-=======
 
->>>>>>> 94d94273d08dbd561d2144c80d7dcc01bd6b0241
 #include "http.c"
 #define BUFFER_SIZE 200
 
@@ -140,8 +137,6 @@ int  recv_request(int socket)
 return 1;
 }
 
-<<<<<<< HEAD
-=======
 // void addClient(int connctfd)
 // {
 //     fds[count].fd = connctfd;
@@ -158,7 +153,6 @@ return 1;
 //     --activeUsers;
 // }
 
->>>>>>> 94d94273d08dbd561d2144c80d7dcc01bd6b0241
 void init_socket(int Port, char *Address)
 {
     assign_port_address(Port, Address);
