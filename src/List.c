@@ -36,6 +36,7 @@ void add_to_list(StringList* list,char* s){
     list->char_count = list->char_count + strlen(s);
 	list->items[list->count++] = s;
 }
+
 //Elimina de la lista la cadena en la posición n
 void remove_from_list_for_position (StringList* list,int n)
 {
@@ -166,7 +167,7 @@ void add_line_to_list(StringList* list, char*line)
             temp +=1;
         else 
         {
-            char* tempChar = (char*)malloc(temp*sizeof(char));
+            char* tempChar = (char*) calloc(sizeof(char), temp+1);
             for (size_t j = 0; j < temp; j++)
                 tempChar[j] = line[j+i - temp];
             tempChar[temp] = '\0';
@@ -175,7 +176,8 @@ void add_line_to_list(StringList* list, char*line)
             temp=0;
         }
 	}
-    char* tempChar = (char*)malloc(temp*sizeof(char));
+    
+	char* tempChar = (char*) calloc(sizeof(char), temp+1);
     for (size_t j = 0; j < temp; j++)
    	    tempChar[j] = line[j+strlen(line) - temp];
    	tempChar[temp] = '\0';
@@ -197,16 +199,24 @@ void print_list(StringList* list){
 void print_list_for_shell (StringList* list)
 {
 	for(int i=0;i<list->count; i++){
-		printf("%s ", list->items[i]);
+		printf("%s \n", list->items[i]);
 	}
 }
 //Devuelve la posición donde se encuentra line
 int Indexof(StringList* list, char* line)
 {
-  for (int i = 0; i < list->count; i++)
-	  if(strcmp(list->items[i],line)==0)
-	  return i;
-	  return -1;
+  	for (int i = 0; i < list->count; i++)
+	  	if(strcmp(list->items[i],line)==0)
+	  		return i;
+	return -1;
+}
+int index_of_char_in_list(StringList* list, char* c)
+{
+	for (size_t i = 0; i < list->count; i++)
+		for (size_t j = 0; j < strlen(list->items[i]); j++)
+			if(list->items[i][j] == c)
+				return i;
+	return -1;
 }
 
 

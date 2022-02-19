@@ -1,26 +1,40 @@
 //TODO: Añadir esto a un archivo mime.text por ejemplo
 
 char* mime;
-char* exts[] = {".json",
+int ext_len = 25;
+char* exts[] = {
+                ".json",
                 ".ogg",
                 ".pdf",
                 ".sql",
                 ".xml",
                 ".zip",
+
                 ".mpeg",
                 ".ogg",
                 ".wave",
                 ".webm",
+
                 ".gif",
                 ".jpeg",
                 ".png",
+
                 ".css",
                 ".csv",
                 ".html",
                 ".xml", 
+
                 ".mp4",
                 ".ogg",
-                ".webm"
+                ".webm",
+                ".mkv",
+
+                ".js",
+                ".css",
+                
+                ".mp3",
+                ".mp4a"
+                
 
 };
 char* mimes[] = {
@@ -47,5 +61,11 @@ char* mimes[] = {
 
                 "video/mp4",
                 "video/ogg",
-                "video/webm"
-};
+                "video/webm",
+                "video/x-matroska",
+
+                "application/javascript",
+                "text/css",
+
+               "audio/mpeg",
+               "audio/mp4"};

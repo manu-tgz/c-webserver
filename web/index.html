@@ -1,20 +1,216 @@
 <!DOCTYPE html>
 <html>
-<link href="style.css" rel="stylesheet" type="text/css">
 
 <head>
-    <title>Raul --- Emmanuel --- Victor WebServer</title>
+    <title>Raul --- Emmanuel --- Victor Server</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!--Filtros y merda-->
+    <style>
+        * {
+            padding: 0;
+            margin: 0;
+        }
 
+        body {
+            font-family: sans-serif;
+            text-rendering: optimizespeed;
+        }
+
+        a {
+            color: #006ed3;
+            text-decoration: none;
+        }
+
+        a:hover,
+        h1 a:hover {
+            color: #319cff;
+        }
+
+        header,
+        #summary {
+            padding-left: 5%;
+            padding-right: 5%;
+        }
+
+        th:first-child,
+        td:first-child {
+            padding-left: 5%;
+        }
+
+        th:last-child,
+        td:last-child {
+            padding-right: 5%;
+        }
+
+        header {
+            padding-top: 25px;
+            padding-bottom: 15px;
+            background-color: #f2f2f2;
+        }
+
+        h1 {
+            font-size: 20px;
+            font-weight: normal;
+            white-space: nowrap;
+            overflow-x: hidden;
+            text-overflow: ellipsis;
+            color: #999;
+        }
+
+        h1 a {
+            color: #000;
+            margin: 0 4px;
+        }
+
+        h1 a:hover {
+            text-decoration: underline;
+        }
+
+        h1 a:first-child {
+            margin: 0;
+        }
+
+        main {
+            display: block;
+        }
+
+        .meta {
+            font-size: 12px;
+            font-family: Verdana, sans-serif;
+            border-bottom: 1px solid #9C9C9C;
+            padding-top: 10px;
+            padding-bottom: 10px;
+        }
+
+        .meta-item {
+            margin-right: 1em;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        tr {
+            border-bottom: 1px dashed #dadada;
+        }
+
+        tbody tr:hover {
+            background-color: #ffffec;
+        }
+
+        th,
+        td {
+            text-align: left;
+            padding: 10px 0;
+        }
+
+        th {
+            padding-top: 15px;
+            padding-bottom: 15px;
+            font-size: 16px;
+            white-space: nowrap;
+        }
+
+        th a {
+            color: black;
+        }
+
+        th svg {
+            vertical-align: middle;
+        }
+
+        td {
+            white-space: nowrap;
+            font-size: 14px;
+        }
+
+        td:first-child {
+            width: 100%;
+        }
+
+        td:nth-child(2) {
+            padding: 0 20px 0 20px;
+        }
+
+        th:last-child,
+        td:last-child {
+            text-align: right;
+        }
+
+        td:first-child svg {
+            position: absolute;
+        }
+
+        td .name,
+        td .goup {
+            margin-left: 1.75em;
+            word-break: break-all;
+            overflow-wrap: break-word;
+            white-space: pre-wrap;
+        }
+
+        .icon {
+            margin-right: 5px;
+        }
+
+        .icon.sort {
+            display: inline-block;
+            width: 1em;
+            height: 1em;
+            position: relative;
+            top: .2em;
+        }
+
+        .icon.sort .top {
+            position: absolute;
+            left: 0;
+            top: -1px;
+        }
+
+        .icon.sort .bottom {
+            position: absolute;
+            bottom: -1px;
+            left: 0;
+        }
+
+        footer {
+            padding: 40px 20px;
+            font-size: 12px;
+            text-align: center;
+        }
+
+        @media (max-width: 600px) {
+            .hideable {
+                display: none;
+            }
+
+            td:first-child {
+                width: auto;
+            }
+
+            th:nth-child(2),
+            td:nth-child(2) {
+                padding-right: 5%;
+                text-align: right;
+            }
+
+            h1 {
+                color: #000;
+            }
+
+            h1 a {
+                margin: 0;
+            }
+        }
+    </style>
 </head>
 
 <body>
     <!--Algunas cosas las copie de un proyecto en github, imagenes, los puntos de carpeta, muy profundo de html-->
     <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" height="0"
         width="0" style="position: absolute;">
-        <!--Referencias de img  y jpg, igual creoq cualquier foto la puedo referenciar crando una carpeta con los jpg-->
         <defs>
             <!-- Folder -->
             <g id="folder" fill-rule="nonzero" fill="none">
@@ -84,13 +280,11 @@
     </svg>
 
     <main>
-        <div class="meta">
-            <div id="summary">
-                <span class="meta-item"><input type="text" placeholder="filter" id="filter" onkeyup='filter()'></span>
-            </div>
+
         </div>
         <div class="listing">
             <table aria-describedby="summary">
+                <caption>Directory</caption>
                 <thead>
                     <tr>
                         <th>
@@ -107,7 +301,7 @@
                         <th>
                             <a href="?sort=size&order=asc" class="icon"><svg width="1em" height=".5em" version="1.1"
                                     viewBox="0 0 12.922194 6.0358899">
-           <tr><td><a href=/home/emmanuel/Almacenamiento/Test/index.html>/index.html</a></td><td>Falta</td><td>Falta</td></tr><tr><td><a href=/home/emmanuel/Almacenamiento/Test/..>/..</a></td><td>Falta</td><td>Falta</td></tr><tr><td><a href=/home/emmanuel/Almacenamiento/Test/image.png>/image.png</a></td><td>Falta</td><td>Falta</td></tr><tr><td><a href=/home/emmanuel/Almacenamiento/Test/.>/.</a></td><td>Falta</td><td>Falta</td></tr><tr><td><a href=/home/emmanuel/Almacenamiento/Test/salida.png>/salida.png</a></td><td>Falta</td><td>Falta</td></tr><tr><td><a href=/home/emmanuel/Almacenamiento/Test/server.log>/server.log</a></td><td>Falta</td><td>Falta</td></tr><tr><td><a href=/home/emmanuel/Almacenamiento/Test/10>/10</a></td><td>Falta</td><td>Falta</td></tr><tr><td><a href=/home/emmanuel/Almacenamiento/Test/index.html>/index.html</a></td><td>Falta</td><td>Falta</td></tr><tr><td><a href=/home/emmanuel/Almacenamiento/Test/..>/..</a></td><td>Falta</td><td>Falta</td></tr><tr><td><a href=/home/emmanuel/Almacenamiento/Test/image.png>/image.png</a></td><td>Falta</td><td>Falta</td></tr><tr><td><a href=/home/emmanuel/Almacenamiento/Test/.>/.</a></td><td>Falta</td><td>Falta</td></tr><tr><td><a href=/home/emmanuel/Almacenamiento/Test/salida.png>/salida.png</a></td><td>Falta</td><td>Falta</td></tr><tr><td><a href=/home/emmanuel/Almacenamiento/Test/server.log>/server.log</a></td><td>Falta</td><td>Falta</td></tr><tr><td><a href=/home/emmanuel/Almacenamiento/Test/10>/10</a></td><td>Falta</td><td>Falta</td></tr>                         <use xlink:href="#up-arrow"></use>
+                                    <use xlink:href="#up-arrow"></use>
                                 </svg></a>
                             <a href="?sort=size&order=dsc" class="icon"><svg width="1em" height=".5em" version="1.1"
                                     viewBox="0 0 12.922194 6.0358899">
@@ -127,53 +321,15 @@
                             <a href="?sort=time&order=asc">Modified</a>
                         </th>
                     </tr>
-                    <tr>
-                        <td><a href=/home/emmanuel/Almacenamiento/Test/index.html>/index.html</a></td>
-                        <td>Falta</td>
-                        <td>Falta</td>
-                    </tr>
-                    <tr>
-                        <td><a href=/home/emmanuel/Almacenamiento/Test/..>/..</a></td>
-                        <td>Falta</td>
-                        <td>Falta</td>
-                    </tr>
-                    <tr>
-                        <td><a href=/home/emmanuel/Almacenamiento/Test/image.png>/image.png</a></td>
-                        <td>Falta</td>
-                        <td>Falta</td>
-                    </tr>
-                    <tr>
-                        <td><a href=/home/emmanuel/Almacenamiento/Test/.>/.</a></td>
-                        <td>Falta</td>
-                        <td>Falta</td>
-                    </tr>
-                    <tr>
-                        <td><a href=/home/emmanuel/Almacenamiento/Test/salida.png>/salida.png</a></td>
-                        <td>Falta</td>
-                        <td>Falta</td>
-                    </tr>
-                    <tr>
-                        <td><a href=/home/emmanuel/Almacenamiento/Test/server.log>/server.log</a></td>
-                        <td>Falta</td>
-                        <td>Falta</td>
-                    </tr>
-                    <tr>
-                        <td><a href=/home/emmanuel/Almacenamiento/Test/10>/10</a></td>
-                        <td>Falta</td>
-                        <td>Falta</td>
-                    </tr>
                 </thead>
-                <tbody>
-
+                <tbody>q
                 </tbody>
             </table>
         </div>
     </main>
     <footer>
-        Victor --- Raul ----- Emmanuel WebServer
+        Victor --- Raul ----- Emmanuel C212 WebServer
     </footer>
-    <script src="filter.js"> </script>
-
 </body>
 
-</html>ï¿½ÿÿ
+</html>

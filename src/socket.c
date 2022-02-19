@@ -1,52 +1,53 @@
 char *address;
 
-#include "http.c"
+// #include "http.c"
 #define BUFFER_SIZE 200
-
 #define BACKLOG 10
 
-int listen_socket,port, True;
+int listen_socket, client_socket;  //Socket escuchar y para el cliente
+int port;
+
 struct sockaddr_in server_addr;
 struct sockaddr_storage client_address;
+
 socklen_t addr_size;
 
 //Clientes 
-//clients data
-int count, activeUsers;
-struct pollfd *fds;
-int *dfds;
-off_t *offsets;
+int count, max;
+fd_set fd_read;
+int client_sockets[20];
 
-
+//Asignar puerto y dirección donde se va ejecutar el servidor
 void assign_port_address(int Port, char *Address)
 {
     //TODO: Parche de rango de puerto.
     port = Port;
-    printf("Listening in port: %d \n", port);
+    printf("REV-Server: Listening in port: %d \n", port);
 
     if (chdir(Address) == -1)
-        perror("Error:");
+        perror("REV-Server: Error:");
     else
     {
         address = Address;
-        printf("Serving Directory: %s \n", address);
+        printf("REV-Server: Serving Directory: %s \n", address);
     }
 }
 
+//Crear el sockect
 void createsocket()
 {
     listen_socket = socket(AF_INET, SOCK_STREAM, 0);
     if (listen_socket == -1) // Crea la conexión y devuelve fd
-        perror("Server: Crear socket - ");
+        perror("REV-Server: Crear socket - ");
 
-    /* @SO_REUSEADDR si es true la dirección puede estar utilizada por otro socket o 
+    /*SO_REUSEADDR si es true la dirección puede estar utilizada por otro socket o 
     está en TIME_WAIT
     Entonces con esto nos permite usar esa dirección */
     if ((setsockopt(listen_socket, SOL_SOCKET, SO_REUSEADDR, &True,
                     sizeof(int))) < 0)
     {
         close(listen_socket);
-        perror("setsockopt");
+        perror("REV-Server: setsockopt - ");
     }
 }
 
@@ -61,7 +62,7 @@ void bind_listen_socket()
     if (bind(listen_socket, (struct sockaddr *)&server_addr, sizeof(struct sockaddr)) < 0)
     {
         close(listen_socket);
-        perror("Server bind:");
+        perror("REV-Server: bind:");
     }
 
     //Inicial el listen
@@ -69,7 +70,7 @@ void bind_listen_socket()
     if (listen(listen_socket, BACKLOG) < 0)
     {
         close(listen_socket);
-        perror("Server listen:");
+        perror("REV-Server: listen:");
     }
 }
 
@@ -78,30 +79,22 @@ Aceptar peticiones en el puerto
 */
 void accept_connection()
 {
-    while (True)
-    {
-        int pid;
-        addr_size = sizeof(client_address);
-        //Acepta peticiones del navegador u otro cliente.
-        new_socket = accept(listen_socket, (struct sockaddr *)&client_address, &addr_size);
-
-        if ((pid = fork()) == -1)
-        {
-            close(new_socket);
-        }
-        else if (pid == 0)
-        {
-            if (new_socket < 0)
-            {
-                perror("Accepting sockets");
-                exit(-1);
-            }
-            //Trabaja con la petición
-            handle_http(new_socket);
-            close(new_socket);
-            exit(0);
-        }
-    }
+    addr_size = sizeof(client_address);
+    // Acepta peticiones del navegador u otro cliente.
+    client_socket = accept(listen_socket, (struct sockaddr *)&client_address, &addr_size);
+    
+    addClient( client_socket);
+    
+}
+void addClient(int connctfd)
+{
+    client_sockets[count] = connctfd;
+    count++;
+}
+void DeleteClient(int client)
+{
+    close(client_sockets[client]);
+    client_sockets[client] = -1;
 }
 
 StringList parse;
@@ -110,9 +103,10 @@ void handle_http(int socket)
 {
     if (recv_request(socket) < 0)
 	{
-		perror("Receive");
+		perror("REV-Server: Receive");
 		exit(-1);
 	}
+
 }
 
 int  recv_request(int socket)
@@ -122,42 +116,48 @@ int  recv_request(int socket)
 
 	if (recv(socket, buffer, BUFFER_SIZE, 0) == -1)
 	{
-		perror("Request");
+		perror("REV-Server: Request");
 		return -1;
 	}
     //Agregar mensaje a la lista
+    printf("%s", buffer);
     parse = string_list_init();
 	add_line_to_list(&parse,buffer);
 
 	printf("\n\n");
-
-	http(parse,buffer);
-	int a = 0;
  
 return 1;
 }
+/*
+ * Función que devuelve el valor máximo en el array.
+ * Supone que los valores válidos de el array son positivos y mayores que 0.
+ * Devuelve 0 si n es 0 o el array es NULL */
+int Max (int *array, int n)
+{
+	int i;
+	int max;
 
-// void addClient(int connctfd)
-// {
-//     fds[count].fd = connctfd;
-//     fds[count].events = POLLIN;
-//     dfds[count++] = -1;
-//     ++activeUsers;
-// }
+	if ((array == NULL) || (n<1))
+		return 0;
+		
+	max = array[0];
+	for (i=0; i<n; i++)
+		if (array[i] > max)
+			max = array[i];
 
-// void DeleteClient(int client)
-// {
-//     close(fds[client].fd);
-//     close(dfds[client]);
-//     fds[client].fd = -1;
-//     --activeUsers;
-// }
+	return max;
+}
+void initialize()
+{   
+    count=0;
+    /* Se inicializa descriptoresLectura */
+    FD_ZERO(&fd_read);
+}
 
 void init_socket(int Port, char *Address)
 {
     assign_port_address(Port, Address);
-    True = 1;
     createsocket();
     bind_listen_socket();
-    accept_connection();
+    initialize();
 }

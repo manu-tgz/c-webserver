@@ -1,9 +1,8 @@
 #include "mimes.c"
-#include <dirent.h>
 
 char *get_ext(char item[]);
 
-sendString(char *message, int socket)
+int sendString(char *message, int socket)
 {
 	int length, bytes_sent;
 
@@ -13,9 +12,10 @@ sendString(char *message, int socket)
 	return bytes_sent;
 }
 
-void sendHeader(char *Status_code, char *Content_Type, int TotalSize, int socket,char* Disposition)
+void sendHeader(char *Status_code, char *Content_Type, int TotalSize, int socket,char* Disposition, char* content_n)
 {
 	char *head = "\r\nHTTP/1.1 ";
+	char *content = "\r\nContent: ";
 	char *content_head = "\r\nContent-Type: ";
 	char *disposition = "\r\nContent-Disposition:";
 	char *server_head = "\r\nServer: PT06";
@@ -40,7 +40,7 @@ void sendHeader(char *Status_code, char *Content_Type, int TotalSize, int socket
 							   strlen(Status_code) +
 							   strlen(Content_Type) +
 							   strlen(contentLength) +
-							   28 +
+							   28 + 
 							   sizeof(char)) *
 						   2);
 
@@ -48,8 +48,17 @@ void sendHeader(char *Status_code, char *Content_Type, int TotalSize, int socket
 	{
 		strcpy(message, head);
 		strcat(message, Status_code);
-		strcat(message, content_head);
-		strcat(message, Content_Type);
+
+        if(strcmp(content_n,"")==1)
+		{
+			strcat(message, content);
+			strcat(message, content_n);
+		}
+		else
+		{
+			strcat(message, content_head);
+			strcat(message, Content_Type);
+		}
 		strcat(message, disposition);
 		strcat(message, Disposition);
 		strcat(message, server_head);
@@ -71,10 +80,23 @@ void sendFile(FILE *fp, int file_size)
 	do
 	{
 		current_char = fgetc(fp); //bytes
-		send(new_socket, &current_char, sizeof(char), 0);
+		send(client_socket, &current_char, sizeof(char), 0);
 
 	} while (current_char != EOF);
 }
+
+void sendhtml(int fd, char* buf, int length)
+{
+    int r = length;
+    while (1)
+    {
+        int n = write(fd, buf, r);
+        r -= n;
+        if (n <= 0 || r <= 0)
+            break;
+    }
+}
+
 //Devuelve el largo del archivo
 int Content_Lenght(FILE *fp)
 {
@@ -93,6 +115,7 @@ char *get_ext(char item[])
 	int ini = strlen(item) - 1;
 	for (int i = ini; i >= 0; i--)
 	{
+		printf("%c",item[i]);
 		if (item[i] == '.')
 		{
 			index = i;
@@ -117,7 +140,9 @@ char *get_ext(char item[])
 //Buscar el mime
 int check_mime(char* ext)
 {
-    for (int i = 0; i < 20; i++)
+	if(ext == NULL)
+	return -1;
+    for (int i = 0; i < ext_len; i++)
         if(strcmp(ext,exts[i])==0)
         {
             mime = mimes[i];
@@ -125,15 +150,3 @@ int check_mime(char* ext)
         }
     return -1;    
 }
-
-//Método para abrir archivos, descargar ....etc
-void open(char *address)
-{
-    DIR *dp;
-    struct dirent *dirp;
-    dp = opendir(address);
-
-    while ((dirp = readdir(dp)) != NULL)
-        printf("%s\n", dirp->d_name);
-}
-

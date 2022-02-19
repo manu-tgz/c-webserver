@@ -13,7 +13,7 @@ typedef struct {
 
 StringList Parser_path (char* path);
 
-URI Uri_init(char* buffer){
+URI Uri_init(StringList list){
     
 	URI uri;
 	uri.sheme = NULL;
@@ -22,8 +22,6 @@ URI Uri_init(char* buffer){
 	uri.query = NULL;
 	uri.fragment = NULL;
 
-	StringList list = string_list_init();
-	add_line_to_list(&list,buffer);
 	uri.sheme = "http"; 
 	uri.autority = "hostpot"; 
 	char* path = get_from_list(&list,1);
@@ -39,8 +37,8 @@ URI Uri_init(char* buffer){
 	}
 	if(parser_path.count >3)
 		uri.fragment = parser_path.items[4];
-	if(strcmp( uri.path, "/")==0)
-		uri.path = "/index.html";
+	// if(strcmp( uri.path, "/")==0)
+	// 	uri.path = "/index.html";
 	return uri;
 }
 
