@@ -44,32 +44,39 @@ void directory(char* url, struct stat *folders, struct stat *files, StringList *
     DIR *dp;
     struct dirent *dirp;
     dp = opendir(url);
-    int a=0;
-
-    while ((dirp = readdir(dp)) != NULL)
+    if (dp != NULL)
     {
-        if (strcmp(dirp->d_name, ".") == 0 ||strcmp(dirp->d_name, "..") == 0)
-            continue;
+        int a = 0;
 
-        struct stat sb;
-        
-        char* temp1 = (char*)malloc((strlen(dirp->d_name)+1 + strlen(url))*sizeof(char));
-        sprintf(temp1, "%s/%s", url, dirp->d_name);
-        stat(temp1, &sb);
+        while ((dirp = readdir(dp)) != NULL)
+        {
+            if (strcmp(dirp->d_name, ".") == 0 || strcmp(dirp->d_name, "..") == 0)
+                continue;
 
-        if (ObtainPermissions(sb.st_mode)[0] == 'd')
-        {
-            folders[folderName->count] = sb;
-            add_to_list(folderName,strdup(rindex(temp1,'/')));
+            struct stat sb;
+
+            char *temp1 = (char *)malloc((strlen(dirp->d_name) + 1 + strlen(url)) * sizeof(char));
+            sprintf(temp1, "%s/%s", url, dirp->d_name);
+            stat(temp1, &sb);
+
+            if (ObtainPermissions(sb.st_mode)[0] == 'd')
+            {
+                folders[folderName->count] = sb;
+                add_to_list(folderName, strdup(rindex(temp1, '/')));
+            }
+            else
+            {
+                files[filesName->count] = sb;
+                add_to_list(filesName, strdup(rindex(temp1, '/')));
+            }
         }
-        else
-        {
-            files[filesName->count] = sb;
-            add_to_list(filesName,strdup(rindex(temp1,'/')));
-        }
+    }
+    else
+    {
+        Msg("No se puede abrir", url, "");
+    }
+
         // closedir(dp);
-    }           
-
 //FIXME: IMprime ambas listas para verificar q se guardaron los nombres
 }
 
