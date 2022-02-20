@@ -6,12 +6,12 @@ int main(int argc, char **argv)
 {
     signal(SIGPIPE, SIG_IGN);
 
-    // if (argc != 2)
-    // {
-    //     init_socket((int)strtol(argv[1], NULL, 10), argv[2]);
-    // }
+    if (argc != 2)
+    {
+        init_socket((int)strtol(argv[1], NULL, 10), argv[2]);
+    }
     
-    init_socket(8000, "/home/emmanuel/Almacenamiento");
+    // init_socket(8080, "/home/emmanuel/Almacenamiento");
     while (True)
     {
         int pid;
@@ -29,7 +29,7 @@ int main(int argc, char **argv)
         accept_connection();
 
         if ((pid = fork()) == -1)
-        {
+        {    
             close(client_socket);
         }
         else if (pid == 0)
