@@ -89,7 +89,9 @@ void get_html(URI uri)
 	else
 		s = html_answer(uri.path, mode, field, order);
 
-	// HTML Resultante
+    if(strlen(s)!=0)
+	{
+    // HTML Resultante
 	char *html = (char *)malloc((strlen(buffer) + strlen(s)) *
 								sizeof(char));
 	Create_HTML(html, s);
@@ -97,4 +99,13 @@ void get_html(URI uri)
 
 	sendHeader("200 OK", "text/html; charset: UTF-8", contentLength, client_socket, "", "");
 	sendhtml(client_socket, html, contentLength);
+	free(s);
+	free(html);
+	}
+	else
+	{
+		char *a = "ERROR No se pudo abrir. Verifique que no tenga espacios:(";
+		sendHeader("500", "", strlen(a), client_socket, "", "");
+		sendhtml(client_socket, a, strlen(a));
+	}
 }

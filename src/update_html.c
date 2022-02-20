@@ -11,34 +11,36 @@ char* html_answer(char *address1, int mode, char *field, char *order)
     struct stat folders[FOLDER_CONT], files[FOLDER_CONT];
     StringList folderName = string_list_init();
     StringList filesName = string_list_init();
-    int f_count = 0, filesCount = 0;
     
-    //FIXME: La lista vuelve vacia. No imprime lista. Verificar q directory funciona.
-    directory(url,folders,files,&folderName,&filesName,f_count,filesCount);
- 
-    Sort(folders, &folderName, mode, field, order);
-    Sort(files, &filesName, mode, field, order);
-
+    int b= directory(url,folders,files,&folderName,&filesName);
+        
     //Crear el html resultante  //TODO: Arreglar tama;o de result.
     int len = Len(folderName,filesName,strlen(html_table),strlen(address1));
     char *shtml = (char *)malloc(len*sizeof(char));
-    sprintf(shtml + strlen(shtml), html_table, "/", "/", "", "", "",'\0');
-    Add_HTML(folders, &folderName, shtml, address1, "#folder");
-    Add_HTML(files, &filesName, shtml, address1, "#file");
-    
+
+
+    if (b>0)
+    {   //Ordenar
+        Sort(folders, &folderName, mode, field, order);
+        Sort(files, &filesName, mode, field, order);
+
+        sprintf(shtml + strlen(shtml), html_table, "/", "/", "", "", "", '\0');
+        Add_HTML(folders, &folderName, shtml, address1, "#folder");
+        Add_HTML(files, &filesName, shtml, address1, "#file");
+    }
     free(folderName.items);
     free(filesName.items);
-    return shtml ;
+    return shtml;
 }
 
 int Len(StringList a, StringList b, int c, int d)
 {
-    int len = ((a.count + b.count + 1) * (c + d + 35) + (a.char_count + b._size) * 2);
+    int len = ((a.count + b.count + 1) * (c + d + 40) + (a.char_count + b._size) * 2);
     len += 2;
     return len;
 }
 //Guarda en las listas y stat las carpetas y archivos.
-void directory(char* url, struct stat *folders, struct stat *files, StringList *folderName, StringList *filesName, int f_count, int files_count)
+int directory(char* url, struct stat *folders, struct stat *files, StringList *folderName, StringList *filesName)
 {
     Msg("\n\n Opening directory: ", url, "...\n");
     DIR *dp;
@@ -68,12 +70,13 @@ void directory(char* url, struct stat *folders, struct stat *files, StringList *
             {
                 files[filesName->count] = sb;
                 add_to_list(filesName, strdup(rindex(temp1, '/')));
-            }
-        }
+            }   
+        }return 1;
     }
     else
     {
         Msg("No se puede abrir", url, "");
+        return -1;
     }
 
         // closedir(dp);
